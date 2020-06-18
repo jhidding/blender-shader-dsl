@@ -541,6 +541,8 @@ nodes = [Node(name, property_values, input_defaults)]</code></pre></div>
     return ' '.join([cap(w) for w in name.split('_')])</code></pre></div>
 
 <p>Since we already have a data structure where nodes and links are stored explicitely, we can just loop over all nodes and links and call the relevant Blender API functions. The name of the shaders are prefixed with <code>ShaderNode</code>.</p>
+<div class="lp-fragment"><div class="lp-ref">«imports»</div><pre><code class=python>import bpy</code></pre></div>
+
 <div class="lp-fragment"><div class="lp-ref">«make-material»</div><pre><code class=python>def make_material(name: str, graph: Graph, **kwargs):
     material = bpy.data.materials.new(name)
     material.use_nodes = True
