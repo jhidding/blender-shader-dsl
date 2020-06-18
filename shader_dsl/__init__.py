@@ -5,6 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Dict, Tuple, Any, Union
 # ~\~ end
+# ~\~ begin <<docs/python_dsl.md|imports>>[1]
+import functools
+# ~\~ end
 # ~\~ begin <<docs/python_dsl.md|graph>>[0]
 @dataclass
 class Graph:

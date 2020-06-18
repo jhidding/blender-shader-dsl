@@ -1,33 +1,4 @@
----
-title: a DSL for Blender shaders in Python
-author: Johan Hidding
----
-
-We'll develop an **embedded domain specific language** in Python. There are very many potential applications for this technique: it is what underlies [Dask](https://dask.org/)'s delayed functions and [Vaex](https://vaex.io/)'s expressions. In this instance we'll develop a means to script shaders in [Blender](https://www.blender.org/). Blender has an extensive system of shaders and transformers to express material properties of a 3D scene. Shaders are composable in a graphical node editor:
-
-![Screenshot of Blender's node editor](blender_material.png)
-
-In addition to the node editor, Blender is completely scriptable with Python. The following code creates a material with two nodes and one link.
-
-``` {.python}
-# create a material
-mat = bpy.data.materials.new("my material")
-mat.use_nodes = True
-
-# clear default nodes
-nodes = mat.node_tree.nodes
-nodes.clear()
-
-# add new nodes
-shader = nodes.new(type='ShaderNodeBsdfDiffuse')
-node_output = nodes.new(type='ShaderNodeOutputMaterial')
-
-# add a link
-links = mat.node_tree.links
-links.new(shader.outputs[0], node_output.inputs[0])
-```
-
-The downside of this API is that it is a bit explicit in the construction of the node graph. Wouldn't it be nice if we could write a shader in a way more suitable to a an actual programming language? In an attempt at wishful programming, we can express the shader shown in the previous image as follows:
+The goal is to get this code snippet to generate a Blender material for us:
 
 ``` {.python}
 color_input = VertexColor(layer_name="color layer")
@@ -36,17 +7,6 @@ diffuse = BsdfDiffuse(color=color_input.color)
 mix = MixShader(color_input.alpha, transparent.BSDF, diffuse.BSDF)
 output_material = OutputMaterial(surface=mix.shader)
 ```
-
-Each node in the graph is a function call, each link is an argument. This code completely captures the semantics of the graph shown above. The question is: how can we make this work?
-
-## Creating a new language
-In programming any language there are three important questions:
-
-- What are the **primitives**?
-- What are the **means of combination**?
-- What are the **means of abstraction**?
-
-Or, so tells the [Structure and Interpretation of Computer Programs](https://web.mit.edu/alexmv/6.037/sicp.pdf). In Python all three of these questions have very long answers. The primitives are extensive, thanks to the *batteries included* philosophy. The means of combination are plenty, depending on the chosen abstraction: classes can inherit and be composed, function can be composed. The ultimate abstraction however, is to develop a new language. That sounds like a big deal, and it is. However, it need not be a lot of work if we reuse everything Python already offers. After all, **code is data**.
 
 As we saw in the wishfull shader code, it is not that hard to come up with a language that could conceivably work. How do we fool Python to have these `VertexColor`, `BsdfTransparent`, ... functions to create a graph structure for us? It turns out, all we need are **functions** and **data**. We need to have our function calls self-translate into a graph data structure. We use `@dataclass` to create our structures, and use ample **type annotation** to document our code.
 
@@ -58,6 +18,7 @@ from typing import List, Dict, Tuple, Any, Union
 
 The first import `from __future__` makes sure that we can use type annotations with forwardly defined types.
 
+## Data structures
 The graph show in Figure 1 is actually a **Directed Acyclic Graph** or DAG. The graph is *directed* because the links have a direction from input to output; it is *acyclic* because no output can serve as input for a node earlier in the chain. You could think of systems where such a link could be made to work: you would need to iterate over a loop until some criterion for convergence is met. Our application however, does not allow for this.
 
 We define a `Graph` as a list of `Node`s and a list of connections going from an `Output` to an `Input`. The `root` of a graph is the node that only takes input. In a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) the `root` node is always on top. By construction this will always be the first element of the list of nodes. Later, we will show why we need to overload `__getattr__` on this class.
@@ -166,6 +127,10 @@ foo = decorate(foo)
 ```
 
 The behaviour of the decorater changes when called with or without arguments! To create such a decorator it is convenient to use another decorator.
+
+```python id="imports"
+import functools
+```
 
 ```python id="decorator"
 def decorator(f):

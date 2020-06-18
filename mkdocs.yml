@@ -1,6 +1,7 @@
 site_name: Blender Shader DSL
 nav:
-        - Home: "python_dsl.md"
+        - Introduction: "index.md"
+        - Source: "python_dsl.md"
         - About: "about.md"
 site_url: https://jhidding.github.io/blender-shader-dsl
 repo_url: https://github.com/jhidding/blender-shader-dsl
