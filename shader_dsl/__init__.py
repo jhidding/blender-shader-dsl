@@ -8,6 +8,9 @@ from typing import List, Dict, Tuple, Any, Union
 # ~\~ begin <<docs/python_dsl.md|imports>>[1]
 import functools
 # ~\~ end
+# ~\~ begin <<docs/python_dsl.md|imports>>[2]
+import bpy
+# ~\~ end
 # ~\~ begin <<docs/python_dsl.md|graph>>[0]
 @dataclass
 class Graph:

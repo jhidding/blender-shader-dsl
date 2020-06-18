@@ -250,6 +250,10 @@ def demangle(name: Union[int, str]) -> Union[int, str]:
 
 Since we already have a data structure where nodes and links are stored explicitely, we can just loop over all nodes and links and call the relevant Blender API functions. The name of the shaders are prefixed with `ShaderNode`.
 
+```python id="imports"
+import bpy
+```
+
 ```python id="make-material"
 def make_material(name: str, graph: Graph, **kwargs):
     material = bpy.data.materials.new(name)
