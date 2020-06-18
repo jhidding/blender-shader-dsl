@@ -1,0 +1,33 @@
+site_name: Blender Shader DSL
+nav:
+        - Home: "python_dsl.md"
+        - About: "about.md"
+site_url: https://jhidding.github.io/blender-shader-dsl
+repo_url: https://github.com/jhidding/blender-shader-dsl
+site_description: >
+    Developing a DSL for Blender shaders.
+site_author: Johan Hidding
+copyright: "<a href=\"https://esciencecenter.nl/\">Netherlands eScience Center</a>"
+
+markdown_extensions:
+   - pymdownx.superfences:
+      custom_fences:
+         - name: "*"
+           class: "codehilite"
+           format: !!python/name:entangled.pymd.format
+           validator: !!python/name:entangled.pymd.validator
+   - admonition
+   - toc:
+        permalink: true
+
+extra_css:
+    - "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/gruvbox-dark.min.css"
+extra_javascript:
+    - "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"
+    - js/init.js
+
+theme:
+        name: "material"
+        palette:
+                primary: "light blue"
+                scheme: "slate"
