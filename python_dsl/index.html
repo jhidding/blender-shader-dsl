@@ -22,7 +22,7 @@
     
     
       
-        <title>a DSL for Blender shaders in Python</title>
+        <title>Source - Blender Shader DSL</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#creating-a-new-language" class="md-skip">
+        <a href="#data-structures" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +94,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              a DSL for Blender shaders in Python
+              Source
             
           </span>
         </div>
@@ -192,6 +192,18 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href=".." title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
@@ -201,14 +213,14 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Home
+        Source
         <span class="md-nav__icon md-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
         </span>
       </label>
     
-    <a href="./" title="Home" class="md-nav__link md-nav__link--active">
-      Home
+    <a href="./" title="Source" class="md-nav__link md-nav__link--active">
+      Source
     </a>
     
       
@@ -225,8 +237,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-a-new-language" class="md-nav__link">
-    Creating a new language
+  <a href="#data-structures" class="md-nav__link">
+    Data structures
   </a>
   
 </li>
@@ -302,8 +314,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-a-new-language" class="md-nav__link">
-    Creating a new language
+  <a href="#data-structures" class="md-nav__link">
+    Data structures
   </a>
   
 </li>
@@ -356,49 +368,22 @@
                   
                 
                 
-                  <h1>Home</h1>
+                  <h1>Source</h1>
                 
-                <p>We'll develop an <strong>embedded domain specific language</strong> in Python. There are very many potential applications for this technique: it is what underlies <a href="https://dask.org/">Dask</a>'s delayed functions and <a href="https://vaex.io/">Vaex</a>'s expressions. In this instance we'll develop a means to script shaders in <a href="https://www.blender.org/">Blender</a>. Blender has an extensive system of shaders and transformers to express material properties of a 3D scene. Shaders are composable in a graphical node editor:</p>
-<p><img alt="Screenshot of Blender's node editor" src="../blender_material.png" /></p>
-<p>In addition to the node editor, Blender is completely scriptable with Python. The following code creates a material with two nodes and one link.</p>
-<pre><code class=python># create a material
-mat = bpy.data.materials.new("my material")
-mat.use_nodes = True
-
-# clear default nodes
-nodes = mat.node_tree.nodes
-nodes.clear()
-
-# add new nodes
-shader = nodes.new(type='ShaderNodeBsdfDiffuse')
-node_output = nodes.new(type='ShaderNodeOutputMaterial')
-
-# add a link
-links = mat.node_tree.links
-links.new(shader.outputs[0], node_output.inputs[0])</code></pre>
-
-<p>The downside of this API is that it is a bit explicit in the construction of the node graph. Wouldn't it be nice if we could write a shader in a way more suitable to a an actual programming language? In an attempt at wishful programming, we can express the shader shown in the previous image as follows:</p>
+                <p>The goal is to get this code snippet to generate a Blender material for us:</p>
 <pre><code class=python>color_input = VertexColor(layer_name="color layer")
 transparent = BsdfTransparent(color=Value((1,1,1,1)))
 diffuse = BsdfDiffuse(color=color_input.color)
 mix = MixShader(color_input.alpha, transparent.BSDF, diffuse.BSDF)
 output_material = OutputMaterial(surface=mix.shader)</code></pre>
 
-<p>Each node in the graph is a function call, each link is an argument. This code completely captures the semantics of the graph shown above. The question is: how can we make this work?</p>
-<h2 id="creating-a-new-language">Creating a new language<a class="headerlink" href="#creating-a-new-language" title="Permanent link">&para;</a></h2>
-<p>In programming any language there are three important questions:</p>
-<ul>
-<li>What are the <strong>primitives</strong>?</li>
-<li>What are the <strong>means of combination</strong>?</li>
-<li>What are the <strong>means of abstraction</strong>?</li>
-</ul>
-<p>Or, so tells the <a href="https://web.mit.edu/alexmv/6.037/sicp.pdf">Structure and Interpretation of Computer Programs</a>. In Python all three of these questions have very long answers. The primitives are extensive, thanks to the <em>batteries included</em> philosophy. The means of combination are plenty, depending on the chosen abstraction: classes can inherit and be composed, function can be composed. The ultimate abstraction however, is to develop a new language. That sounds like a big deal, and it is. However, it need not be a lot of work if we reuse everything Python already offers. After all, <strong>code is data</strong>.</p>
 <p>As we saw in the wishfull shader code, it is not that hard to come up with a language that could conceivably work. How do we fool Python to have these <code>VertexColor</code>, <code>BsdfTransparent</code>, ... functions to create a graph structure for us? It turns out, all we need are <strong>functions</strong> and <strong>data</strong>. We need to have our function calls self-translate into a graph data structure. We use <code>@dataclass</code> to create our structures, and use ample <strong>type annotation</strong> to document our code.</p>
 <div class="lp-fragment"><div class="lp-ref">«imports»</div><pre><code class=python>from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Dict, Tuple, Any, Union</code></pre></div>
 
 <p>The first import <code>from __future__</code> makes sure that we can use type annotations with forwardly defined types.</p>
+<h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
 <p>The graph show in Figure 1 is actually a <strong>Directed Acyclic Graph</strong> or DAG. The graph is <em>directed</em> because the links have a direction from input to output; it is <em>acyclic</em> because no output can serve as input for a node earlier in the chain. You could think of systems where such a link could be made to work: you would need to iterate over a loop until some criterion for convergence is met. Our application however, does not allow for this.</p>
 <p>We define a <code>Graph</code> as a list of <code>Node</code>s and a list of connections going from an <code>Output</code> to an <code>Input</code>. The <code>root</code> of a graph is the node that only takes input. In a <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sort</a> the <code>root</code> node is always on top. By construction this will always be the first element of the list of nodes. Later, we will show why we need to overload <code>__getattr__</code> on this class.</p>
 <div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
@@ -470,6 +455,8 @@ def foo(bar):
 <pre><code class=python>foo = decorate(foo)</code></pre>
 
 <p>The behaviour of the decorater changes when called with or without arguments! To create such a decorator it is convenient to use another decorator.</p>
+<div class="lp-fragment"><div class="lp-ref">«imports»</div><pre><code class=python>import functools</code></pre></div>
+
 <div class="lp-fragment"><div class="lp-ref">«decorator»</div><pre><code class=python>def decorator(f):
     """Creates a paramatric decorator from a function. The resulting decorator
     will optionally take keyword arguments."""
@@ -618,8 +605,6 @@ def BsdfDiffuse(**kwargs):
 &lt;&lt;make-material&gt;&gt;
 &lt;&lt;shaders&gt;&gt;</code></pre></div>
                 
-                  
-                
               
               
                 
@@ -636,6 +621,20 @@ def BsdfDiffuse(**kwargs):
   
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href=".." title="Introduction" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Introduction
+              </div>
+            </div>
+          </a>
         
         
           <a href="../about/" title="About" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
