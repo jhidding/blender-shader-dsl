@@ -1,0 +1,697 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Developing a DSL for Blender shaders.
+">
+      
+      
+        <link rel="canonical" href="https://jhidding.github.io/blender-shader-dsl/python_dsl/">
+      
+      
+        <meta name="author" content="Johan Hidding">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.3">
+    
+    
+      
+        <title>a DSL for Blender shaders in Python</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6e35a1a6.min.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a46bcfb3.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#03a9f4">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/gruvbox-dark.min.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="light-blue" data-md-color-accent="">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#creating-a-new-language" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://jhidding.github.io/blender-shader-dsl" title="Blender Shader DSL" class="md-header-nav__button md-logo" aria-label="Blender Shader DSL">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Blender Shader DSL
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              a DSL for Blender shaders in Python
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/jhidding/blender-shader-dsl/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://jhidding.github.io/blender-shader-dsl" title="Blender Shader DSL" class="md-nav__button md-logo" aria-label="Blender Shader DSL">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Blender Shader DSL
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/jhidding/blender-shader-dsl/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Home
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Home" class="md-nav__link md-nav__link--active">
+      Home
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-new-language" class="md-nav__link">
+    Creating a new language
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorating-functions" class="md-nav__link">
+    Decorating functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-shader" class="md-nav__link">
+    Building the shader
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shaders" class="md-nav__link">
+    Shaders
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module" class="md-nav__link">
+    Module
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
+      About
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-new-language" class="md-nav__link">
+    Creating a new language
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorating-functions" class="md-nav__link">
+    Decorating functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-shader" class="md-nav__link">
+    Building the shader
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shaders" class="md-nav__link">
+    Shaders
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module" class="md-nav__link">
+    Module
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/jhidding/blender-shader-dsl/edit/master/docs/python_dsl.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                  <h1>Home</h1>
+                
+                <p>We'll develop an <strong>embedded domain specific language</strong> in Python. There are very many potential applications for this technique: it is what underlies <a href="https://dask.org/">Dask</a>'s delayed functions and <a href="https://vaex.io/">Vaex</a>'s expressions. In this instance we'll develop a means to script shaders in <a href="https://www.blender.org/">Blender</a>. Blender has an extensive system of shaders and transformers to express material properties of a 3D scene. Shaders are composable in a graphical node editor:</p>
+<p><img alt="Screenshot of Blender's node editor" src="../blender_material.png" /></p>
+<p>In addition to the node editor, Blender is completely scriptable with Python. The following code creates a material with two nodes and one link.</p>
+<pre><code class=python># create a material
+mat = bpy.data.materials.new("my material")
+mat.use_nodes = True
+
+# clear default nodes
+nodes = mat.node_tree.nodes
+nodes.clear()
+
+# add new nodes
+shader = nodes.new(type='ShaderNodeBsdfDiffuse')
+node_output = nodes.new(type='ShaderNodeOutputMaterial')
+
+# add a link
+links = mat.node_tree.links
+links.new(shader.outputs[0], node_output.inputs[0])</code></pre>
+
+<p>The downside of this API is that it is a bit explicit in the construction of the node graph. Wouldn't it be nice if we could write a shader in a way more suitable to a an actual programming language? In an attempt at wishful programming, we can express the shader shown in the previous image as follows:</p>
+<pre><code class=python>color_input = VertexColor(layer_name="color layer")
+transparent = BsdfTransparent(color=Value((1,1,1,1)))
+diffuse = BsdfDiffuse(color=color_input.color)
+mix = MixShader(color_input.alpha, transparent.BSDF, diffuse.BSDF)
+output_material = OutputMaterial(surface=mix.shader)</code></pre>
+
+<p>Each node in the graph is a function call, each link is an argument. This code completely captures the semantics of the graph shown above. The question is: how can we make this work?</p>
+<h2 id="creating-a-new-language">Creating a new language<a class="headerlink" href="#creating-a-new-language" title="Permanent link">&para;</a></h2>
+<p>In programming any language there are three important questions:</p>
+<ul>
+<li>What are the <strong>primitives</strong>?</li>
+<li>What are the <strong>means of combination</strong>?</li>
+<li>What are the <strong>means of abstraction</strong>?</li>
+</ul>
+<p>Or, so tells the <a href="https://web.mit.edu/alexmv/6.037/sicp.pdf">Structure and Interpretation of Computer Programs</a>. In Python all three of these questions have very long answers. The primitives are extensive, thanks to the <em>batteries included</em> philosophy. The means of combination are plenty, depending on the chosen abstraction: classes can inherit and be composed, function can be composed. The ultimate abstraction however, is to develop a new language. That sounds like a big deal, and it is. However, it need not be a lot of work if we reuse everything Python already offers. After all, <strong>code is data</strong>.</p>
+<p>As we saw in the wishfull shader code, it is not that hard to come up with a language that could conceivably work. How do we fool Python to have these <code>VertexColor</code>, <code>BsdfTransparent</code>, ... functions to create a graph structure for us? It turns out, all we need are <strong>functions</strong> and <strong>data</strong>. We need to have our function calls self-translate into a graph data structure. We use <code>@dataclass</code> to create our structures, and use ample <strong>type annotation</strong> to document our code.</p>
+<div class="lp-fragment"><div class="lp-ref">«imports»</div><pre><code class=python>from __future__ import annotations
+from dataclasses import dataclass
+from typing import List, Dict, Tuple, Any, Union</code></pre></div>
+
+<p>The first import <code>from __future__</code> makes sure that we can use type annotations with forwardly defined types.</p>
+<p>The graph show in Figure 1 is actually a <strong>Directed Acyclic Graph</strong> or DAG. The graph is <em>directed</em> because the links have a direction from input to output; it is <em>acyclic</em> because no output can serve as input for a node earlier in the chain. You could think of systems where such a link could be made to work: you would need to iterate over a loop until some criterion for convergence is met. Our application however, does not allow for this.</p>
+<p>We define a <code>Graph</code> as a list of <code>Node</code>s and a list of connections going from an <code>Output</code> to an <code>Input</code>. The <code>root</code> of a graph is the node that only takes input. In a <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sort</a> the <code>root</code> node is always on top. By construction this will always be the first element of the list of nodes. Later, we will show why we need to overload <code>__getattr__</code> on this class.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Graph:
+    nodes: List[Node]
+    links: List[Tuple[Output, Input]]
+
+    @property
+    def root(self):
+        return self.nodes[0]
+
+    &lt;&lt;graph-getattr&gt;&gt;</code></pre></div>
+
+<p>Each <code>Node</code> has a name, properties and input_defaults. The properties are settings that cannot be controlled by input from another node. In some cases the names of inputs are not unique: see for instance the <em>Mix Shader</em>, it has two inputs called <em>Shader</em>. We have to identify those inputs by location, which is why the indices into <code>input_defaults</code> allow for both strings and integers.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Node:
+    name: str
+    properties: Dict[str, Any]
+    input_defaults: Dict[Union[int, str], Value]</code></pre></div>
+
+<p>An <code>Output</code> is a tuple of a <code>Node</code> and a string identifying the output element.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Output:
+    node: Node
+    name: str</code></pre></div>
+
+<p>An <code>Input</code> is a tuple of a <code>Node</code> and a string or integer.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Input:
+    node: Node
+    name: Union[int, str]</code></pre></div>
+
+<p>Our functions will take two kinds of arguments: <code>Value</code> and <code>Output</code>. To formalise this, value arguments should be wrapped in a <code>Value</code> container. This is not strictly necessary, but this way we can type-check the programmers intentions.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Value:
+    value: Any</code></pre></div>
+
+<p>Now that we have worked out the data structure, we can look at the programming interface. A <code>Graph</code> is representative of a computation, where the result is represented by the <code>root</code> node of the graph. We may ask for any output value on this root node: for this we overload the <code>__getattr__</code> method. Another choice could be to overload the <code>__getitem__</code> method. Take a look at the following expression:</p>
+<pre><code class=python>mix = MixShader(color_input.alpha, transparent.BSDF, diffuse.BSDF)</code></pre>
+
+<p>The <em>Mix Shader</em> takes three inputs here, all of which are given by attributes of previously defined graphs. Any of these attributes should result in a structure giving the parent graph, and the <code>Output</code> element that is refered to.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph-getattr»</div><pre><code class=python>def __getattr__(self, name):
+    return Promise(self, Output(self.root, name))</code></pre></div>
+
+<p>We collected these into a <code>Promise</code>, since the combination of a graph and an output give the <em>promise</em> of a value.</p>
+<div class="lp-fragment"><div class="lp-ref">«graph»</div><pre><code class=python>@dataclass
+class Promise:
+    graph: Graph
+    output: Output</code></pre></div>
+
+<h2 id="decorating-functions">Decorating functions<a class="headerlink" href="#decorating-functions" title="Permanent link">&para;</a></h2>
+<p>Now, all we need to do is to write functions that will build the graph structure. We will use function decorators to create the desired behaviour. You may have seen this syntax before:</p>
+<pre><code class=python>@decorate(extra_arguments=True)
+def foo(bar):
+    pass</code></pre>
+
+<p>In practice, what this does is the following:</p>
+<pre><code class=python>def foo(bar):
+    pass
+
+foo = decorate(extra_arguments=True)(foo)</code></pre>
+
+<p>You may have seen function decorators that can be used with or without extra arguments. If used without arguments,</p>
+<pre><code class=python>@decorate
+def foo(bar):
+    pass</code></pre>
+
+<p>is expanded to</p>
+<pre><code class=python>foo = decorate(foo)</code></pre>
+
+<p>The behaviour of the decorater changes when called with or without arguments! To create such a decorator it is convenient to use another decorator.</p>
+<div class="lp-fragment"><div class="lp-ref">«decorator»</div><pre><code class=python>def decorator(f):
+    """Creates a paramatric decorator from a function. The resulting decorator
+    will optionally take keyword arguments."""
+    @functools.wraps(f)
+    def decoratored_function(*args, **kwargs):
+        if args and len(args) == 1:
+            return f(*args, **kwargs)
+
+        if args:
+            raise TypeError(
+                "This decorator only accepts extra keyword arguments.")
+
+        return lambda g: f(g, **kwargs)
+
+    return decoratored_function</code></pre></div>
+
+<p>Now we can define our <code>node</code> decorator.</p>
+<div class="lp-fragment"><div class="lp-ref">«node»</div><pre><code class=python>@decorator
+def node(f, properties=["location"]):
+    @functools.wraps(f)
+    def g(*args, **kwargs):
+        &lt;&lt;node-body&gt;&gt;
+    return g</code></pre></div>
+
+<p>The <code>properties</code> argument takes names that should be treated as properties, as opposed to names that are inputs. Every node can be given a <code>location</code> argument to indicate the position it should take in the Blender GUI. For example, the <code>VertexColor</code> shader has a property called <code>layer_name</code>, which can be indicated as follows:</p>
+<div class="lp-fragment"><div class="lp-ref">«shaders»</div><pre><code class=python>@node(properties=["location", "layer_name"])
+def VertexColor(**kwargs):
+    pass</code></pre></div>
+
+<p>The following line shows how this is used.</p>
+<pre><code class=python>color_input = VertexColor(layer_name="color layer")</code></pre>
+
+<p>Given the arguments to a node-function <code>f</code>, we now need to build the graph that has the resulting node as a root element.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>name = f.__name__
+property_values = {}
+input_defaults = {}</code></pre></div>
+
+<p>The graph is built starting with an empty set of links and the single root node.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>links = []
+nodes = [Node(name, property_values, input_defaults)]</code></pre></div>
+
+<p>Every time we encounter an argument that is an <code>Promise</code> from a different node, we need to merge the graph in that promise with the new graph. We would like to work with the Python builtin <code>set</code> type, however that type doesn't allow for hashing using Python object ids. One way to implement <code>set</code>-like behaviour is to use a <code>dict</code> with <code>id(value)</code> as keys. For the moment, we'll use a <code>list</code>.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>def merge_graph(g):
+    for n in g.nodes:
+        if n not in nodes:
+            nodes.append(n)
+    for link in g.links:
+        if link not in links:
+            links.append(link)</code></pre></div>
+
+<p>We loop over all positional arguments to the function, discriminating between <code>Value</code> arguments and <code>Promise</code> arguments.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>for i, a in enumerate(args):
+    if isinstance(a, Value):
+        input_defaults[i] = a
+    elif isinstance(a, Promise):
+        merge_graph(a.graph)
+        links.append((a.output, Input(nodes[0], i)))</code></pre></div>
+
+<p>We do the same for the keyword arguments, with the distinction that we need to check for property arguments that need to be treated differently.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>for k, v in kwargs.items():
+    if k in properties:
+        property_values[k] = v
+    elif isinstance(v, Value):
+        input_defaults[k] = v
+    elif isinstance(v, Promise):
+        merge_graph(v.graph)
+        links.append((v.output, Input(nodes[0], k)))</code></pre></div>
+
+<p>Once all that is done, we return the graph.</p>
+<div class="lp-fragment"><div class="lp-ref">«node-body»</div><pre><code class=python>return Graph(nodes, links)</code></pre></div>
+
+<p>We have now turned the function calls into a DAG. Upto now this has been a very generic exercise in developing an EDSL in Python. We still need to turn our <code>Graph</code> data structure into Blender API calls.</p>
+<h2 id="building-the-shader">Building the shader<a class="headerlink" href="#building-the-shader" title="Permanent link">&para;</a></h2>
+<p>We used object attributes to access output elements of nodes. In Blender these output elements have title cased names with spaces. We need to turn an attribute like <code>subsurface_color</code> into a name like <code>Subsurface Color</code>. For this we have a helper function called <code>demangle</code>.</p>
+<div class="lp-fragment"><div class="lp-ref">«make-material»</div><pre><code class=python>def demangle(name: Union[int, str]) -&gt; Union[int, str]:
+    if isinstance(name, int):
+        return name
+
+    def cap(s):
+        return s[0].upper() + s[1:]
+
+    return ' '.join([cap(w) for w in name.split('_')])</code></pre></div>
+
+<p>Since we already have a data structure where nodes and links are stored explicitely, we can just loop over all nodes and links and call the relevant Blender API functions. The name of the shaders are prefixed with <code>ShaderNode</code>.</p>
+<div class="lp-fragment"><div class="lp-ref">«make-material»</div><pre><code class=python>def make_material(name: str, graph: Graph, **kwargs):
+    material = bpy.data.materials.new(name)
+    material.use_nodes = True
+    nodes = material.node_tree.nodes
+    nodes.clear()
+
+    nodemap = {}
+    for n in graph.nodes:
+        s = nodes.new(type=f"ShaderNode{n.name}")
+        nodemap[id(n)] = s
+        for k, v in n.properties.items():
+            setattr(s, k, v)
+        for q, v in n.input_defaults.items():
+            key = demangle(q)
+            s.inputs[key].default_value = v.value
+
+    links = material.node_tree.links
+    for (o, i) in graph.links:
+        node_out = nodemap[id(o.node)]
+        node_in = nodemap[id(i.node)]
+        links.new(node_out.outputs[demangle(o.name)],
+                  node_in.inputs[demangle(i.name)])
+
+    for k, v in kwargs.items():
+        setattr(material, k, v)
+
+    return material</code></pre></div>
+
+<h2 id="shaders">Shaders<a class="headerlink" href="#shaders" title="Permanent link">&para;</a></h2>
+<p>The actual shader functions have no implementation since they are never evaluated. The reason why we still want to define them as functions is that they will become <strong>qualified names</strong>. Any odd variable name in Python, like <code>a = 42</code> is not qualified. We cannot later ask for the name of the variable. Functions and classes however are different. A second reason why defining the shaders as empty functions is a good idea, is that we can add documentation later on.</p>
+<div class="lp-fragment"><div class="lp-ref">«shaders»</div><pre><code class=python>@node(properties=["location"])
+def BsdfPrincipled(**kwargs):
+    pass
+
+
+@node(properties=["location"])
+def OutputMaterial(**kwargs):
+    pass
+
+
+@node(properties=["location"])
+def MixShader(*args, **kwargs):
+    pass
+
+
+@node
+def BsdfTransparent(**kwargs):
+    pass
+
+
+@node
+def BsdfDiffuse(**kwargs):
+    pass</code></pre></div>
+
+<h2 id="module">Module<a class="headerlink" href="#module" title="Permanent link">&para;</a></h2>
+<div class="lp-fragment"><div class="lp-ref">«file://shader_dsl/__init__.py»</div><pre><code class=python>&lt;&lt;imports&gt;&gt;
+&lt;&lt;graph&gt;&gt;
+
+&lt;&lt;decorator&gt;&gt;
+&lt;&lt;node&gt;&gt;
+
+&lt;&lt;make-material&gt;&gt;
+&lt;&lt;shaders&gt;&gt;</code></pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+        
+          <a href="../about/" title="About" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                About
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            <a href="https://esciencecenter.nl/">Netherlands eScience Center</a>
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
+      <script src="../assets/javascripts/bundle.a45f732b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.c03f0417.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+      
+        <script src="../js/init.js"></script>
+      
+    
+  </body>
+</html>
