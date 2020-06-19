@@ -57,7 +57,7 @@ Each node in the graph is a function call, each link is an argument. This code c
 The [source code of this module](python_dsl) is completely literate, meaning that the entire code is contained in this documentation. Code blocks that are part of the source code are named with "«graph»" identifiers. These names may appear in other code blocks in the form of `<<graph>>` references. The resulting code is a single file Python module.
 
 ## Development
-This is literate program. If you'd like to contribute, you'll need to install [Entangled](entangled.github.io). Be sure to have the Entangled daemon running while editing `docs/python_dsl.md` or any file in `shader_dsl`. From the project root, run:
+This is literate program. If you'd like to contribute, you'll need to install [Entangled](https://entangled.github.io). Be sure to have the Entangled daemon running while editing `docs/python_dsl.md` or any file in `shader_dsl`. From the project root, run:
 
 ```bash
 entangled daemon
