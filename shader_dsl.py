@@ -1,5 +1,5 @@
-# ~\~ language=Python filename=shader_dsl/__init__.py
-# ~\~ begin <<docs/python_dsl.md|shader_dsl/__init__.py>>[0]
+# ~\~ language=Python filename=shader_dsl.py
+# ~\~ begin <<docs/python_dsl.md|shader_dsl.py>>[0]
 # ~\~ begin <<docs/python_dsl.md|imports>>[0]
 from __future__ import annotations
 from dataclasses import dataclass
@@ -170,24 +170,36 @@ def VertexColor(**kwargs):
 def BsdfPrincipled(**kwargs):
     pass
 
-
 @node(properties=["location"])
 def OutputMaterial(**kwargs):
     pass
-
 
 @node(properties=["location"])
 def MixShader(*args, **kwargs):
     pass
 
-
 @node
 def BsdfTransparent(**kwargs):
     pass
 
-
 @node
 def BsdfDiffuse(**kwargs):
+    pass
+# ~\~ end
+# ~\~ begin <<docs/about.md|about>>[0]
+bl_info = {
+    "name": "Shader DSL",
+    "blender": (2, 83, 0),
+    "category": "Development",
+    "author": "Johan Hidding",
+    "version": (0, 1),
+    "description": "DSL for scripting node materials."
+}
+
+def register():
+    pass
+
+def unregister():
     pass
 # ~\~ end
 # ~\~ end

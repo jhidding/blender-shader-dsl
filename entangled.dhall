@@ -11,11 +11,10 @@ let syntax : entangled.Syntax =
 
 let database = Some ".entangled/db.sqlite"
 
-let watchList = [ "docs/*.md" ]
+let watchList = [ "docs/python_dsl.md", "docs/about.md" ]
 
 in { entangled = entangled.Config :: { database = database
                                      , watchList = watchList
-                                     , languages = languages
                                      , syntax = syntax }
 
    , jupyter = { language = "Python", kernel = "python3" }

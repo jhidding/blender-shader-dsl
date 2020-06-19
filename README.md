@@ -56,8 +56,15 @@ Each node in the graph is a function call, each link is an argument. This code c
 
 The [source code of this module](python_dsl) is completely literate, meaning that the entire code is contained in this documentation. Code blocks that are part of the source code are named with "«graph»" identifiers. These names may appear in other code blocks in the form of `<<graph>>` references. The resulting code is a single file Python module.
 
+## Installing
+Blender add-ons are not installed like normal Python scripts. To copy `shader_dsl.py` to the correct location (at least on my Linux system)
+
+```
+make install
+```
+
 ## Development
-This is literate program. If you'd like to contribute, you'll need to install [Entangled](https://entangled.github.io). Be sure to have the Entangled daemon running while editing `docs/python_dsl.md` or any file in `shader_dsl`. From the project root, run:
+This is literate program. If you'd like to contribute, you'll need to install [Entangled](https://entangled.github.io). Be sure to have the Entangled daemon running while editing `docs/python_dsl.md` or `shader_dsl.py`. From the project root, run:
 
 ```bash
 entangled daemon
@@ -74,4 +81,7 @@ To get a live preview of the rendered output, run:
 ```bash
 mkdocs serve
 ```
+
+### Linters
+This code is checked with `flake8` and `mypy`.
 

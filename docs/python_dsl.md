@@ -292,21 +292,17 @@ The actual shader functions have no implementation since they are never evaluate
 def BsdfPrincipled(**kwargs):
     pass
 
-
 @node(properties=["location"])
 def OutputMaterial(**kwargs):
     pass
-
 
 @node(properties=["location"])
 def MixShader(*args, **kwargs):
     pass
 
-
 @node
 def BsdfTransparent(**kwargs):
     pass
-
 
 @node
 def BsdfDiffuse(**kwargs):
@@ -315,7 +311,7 @@ def BsdfDiffuse(**kwargs):
 
 ## Module
 
-```python file="shader_dsl/__init__.py"
+```python file="shader_dsl.py"
 <<imports>>
 <<graph>>
 
@@ -324,4 +320,5 @@ def BsdfDiffuse(**kwargs):
 
 <<make-material>>
 <<shaders>>
+<<about>>
 ```
