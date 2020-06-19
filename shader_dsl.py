@@ -185,6 +185,10 @@ def BsdfTransparent(**kwargs):
 @node
 def BsdfDiffuse(**kwargs):
     pass
+
+@node
+def Emission(**kwargs):
+    pass
 # ~\~ end
 # ~\~ begin <<docs/about.md|about>>[0]
 bl_info = {

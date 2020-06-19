@@ -57,7 +57,7 @@ Each node in the graph is a function call, each link is an argument. This code c
 The [source code of this module](python_dsl) is completely literate, meaning that the entire code is contained in this documentation. Code blocks that are part of the source code are named with "«graph»" identifiers. These names may appear in other code blocks in the form of `<<graph>>` references. The resulting code is a single file Python module.
 
 ## Installing
-Blender add-ons are not installed like normal Python scripts. To copy `shader_dsl.py` to the correct location (at least on my Linux system)
+Blender add-ons are not installed like normal Python scripts. To copy `shader_dsl.py` to the `${HOME}/.config/blender/${BLENDER_VERSION}/scripts/addons` location (at least on my Linux system)
 
 ```
 make install

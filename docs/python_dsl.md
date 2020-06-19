@@ -307,6 +307,10 @@ def BsdfTransparent(**kwargs):
 @node
 def BsdfDiffuse(**kwargs):
     pass
+
+@node
+def Emission(**kwargs):
+    pass
 ```
 
 ## Module
