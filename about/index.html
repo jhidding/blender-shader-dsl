@@ -65,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#creating-an-add-on" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -218,6 +223,8 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
     <a href="./" title="About" class="md-nav__link md-nav__link--active">
       About
@@ -233,6 +240,21 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
@@ -246,9 +268,21 @@
                   
                 
                 
-                  <h1>About</h1>
-                
-                
+                <h1 id="creating-an-add-on">Creating an add-on<a class="headerlink" href="#creating-an-add-on" title="Permanent link">&para;</a></h1>
+<div class="lp-fragment"><div class="lp-ref">«about»</div><pre><code class=python>bl_info = {
+    "name": "Shader DSL",
+    "blender": (2, 83, 0),
+    "category": "Development",
+    "author": "Johan Hidding",
+    "version": (0, 1),
+    "description": "DSL for scripting node materials."
+}
+
+def register():
+    pass
+
+def unregister():
+    pass</code></pre></div>
                 
               
               

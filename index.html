@@ -65,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#blender-shader-dsl" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -194,10 +199,65 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Introduction
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
     
     <a href="." title="Introduction" class="md-nav__link md-nav__link--active">
       Introduction
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing" class="md-nav__link">
+    Installing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    Development
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linters" class="md-nav__link">
+    Linters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -233,6 +293,58 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing" class="md-nav__link">
+    Installing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    Development
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linters" class="md-nav__link">
+    Linters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
@@ -246,10 +358,9 @@
                   
                 
                 
-                  <h1>Introduction</h1>
-                
-                <p><em>by Johan Hidding</em></p>
-<p><a href="https://entangled.github.io/"><img alt="Entangled badge" src="https://img.shields.io/badge/entangled-Use%20the%20source!-%2300aeff" /></a></p>
+                <p><a href="https://entangled.github.io/"><img alt="Entangled badge" src="https://img.shields.io/badge/entangled-Use%20the%20source!-%2300aeff" /></a></p>
+<h1 id="blender-shader-dsl">Blender shader DSL<a class="headerlink" href="#blender-shader-dsl" title="Permanent link">&para;</a></h1>
+<p><em>by Johan Hidding</em></p>
 <p>This code provides an embedded language within Python to program shaders in Blender. While this goal is very specific, <strong>the technique used is Universal</strong>.</p>
 <p>I believe it always a good idea to start a programming story with a morale citing <a href="https://web.mit.edu/alexmv/6.037/sicp.pdf">Structure and Interpretation of Computer Programs</a>. In programming any language there are three important questions:</p>
 <ul>
@@ -259,7 +370,7 @@
 </ul>
 <p>In Python all three of these questions have very long answers. The primitives are extensive, thanks to the <em>batteries included</em> philosophy. The means of combination are plenty, depending on the chosen abstraction: classes can inherit and be composed, function can be composed. The ultimate abstraction however, is to develop a new language. That sounds like a big deal, and it is. However, it need not be a lot of work if we reuse everything Python already offers. After all, <strong>code is data</strong>.</p>
 <p>We develop an <strong>embedded domain specific language</strong> in Python. There are very many potential applications for this technique: it is what underlies <a href="https://dask.org/">Dask</a>'s delayed functions and <a href="https://vaex.io/">Vaex</a>'s expressions. In this instance we'll develop a means to script shaders in <a href="https://www.blender.org/">Blender</a>. Blender has an extensive system of shaders and transformers to express material properties of a 3D scene. Shaders are composable in a graphical node editor:</p>
-<p><img alt="Screenshot of Blender's node editor" src="blender_material.png" /></p>
+<p><img alt="Screenshot of Blender's node editor" src="img/blender_material.png" /></p>
 <p>In addition to the node editor, Blender is completely scriptable with Python. The following code creates a material with two nodes and one link.</p>
 <pre><code class=python># create a material
 mat = bpy.data.materials.new("my material")
@@ -278,14 +389,35 @@ links = mat.node_tree.links
 links.new(shader.outputs[0], node_output.inputs[0])</code></pre>
 
 <p>The downside of this API is that it is a bit explicit in the construction of the node graph. Wouldn't it be nice if we could write a shader in a way more suitable to a an actual programming language? In an attempt at wishful programming, we can express the shader shown in the previous image as follows:</p>
-<pre><code class=python>color_input = VertexColor(layer_name="color layer")
+<pre><code class=python>from shader_dsl import (make_material, VertexColor, BsdfTransparent,
+                        BsdfDiffuse, MixShader, OutputMaterial)
+
+color_input = VertexColor(layer_name="color layer")
 transparent = BsdfTransparent(color=Value((1,1,1,1)))
 diffuse = BsdfDiffuse(color=color_input.color)
 mix = MixShader(color_input.alpha, transparent.BSDF, diffuse.BSDF)
-output_material = OutputMaterial(surface=mix.shader)</code></pre>
+output_material = OutputMaterial(surface=mix.shader)
+
+mat = make_material("my material", output_material)</code></pre>
 
 <p>Each node in the graph is a function call, each link is an argument. This code completely captures the semantics of the graph shown above. I don't know if I'm crazy, but I get very happy if code can be expressed more effectively like this. The question is: how can we make this work?</p>
 <p>The <a href="python_dsl">source code of this module</a> is completely literate, meaning that the entire code is contained in this documentation. Code blocks that are part of the source code are named with "«graph»" identifiers. These names may appear in other code blocks in the form of <code>&lt;&lt;graph&gt;&gt;</code> references. The resulting code is a single file Python module.</p>
+<h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
+<p>Blender add-ons are not installed like normal Python scripts. To copy <code>shader_dsl.py</code> to the correct location (at least on my Linux system)</p>
+<pre><code class=>make install</code></pre>
+
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<p>This is literate program. If you'd like to contribute, you'll need to install <a href="https://entangled.github.io">Entangled</a>. Be sure to have the Entangled daemon running while editing <code>docs/python_dsl.md</code> or <code>shader_dsl.py</code>. From the project root, run:</p>
+<pre><code class=bash>entangled daemon</code></pre>
+
+<p>The website is generated with <a href="https://www.mkdocs.org/">MkDocs</a>, and needs some plugins installed:</p>
+<pre><code class=bash>pip install mkdocs entangled-filters pymdown-extensions</code></pre>
+
+<p>To get a live preview of the rendered output, run:</p>
+<pre><code class=bash>mkdocs serve</code></pre>
+
+<h3 id="linters">Linters<a class="headerlink" href="#linters" title="Permanent link">&para;</a></h3>
+<p>This code is checked with <code>flake8</code> and <code>mypy</code>.</p>
                 
               
               
