@@ -15,7 +15,7 @@ In Python all three of these questions have very long answers. The primitives ar
 
 We develop an **embedded domain specific language** in Python. There are very many potential applications for this technique: it is what underlies [Dask](https://dask.org/)'s delayed functions and [Vaex](https://vaex.io/)'s expressions. In this instance we'll develop a means to script shaders in [Blender](https://www.blender.org/). Blender has an extensive system of shaders and transformers to express material properties of a 3D scene. Shaders are composable in a graphical node editor:
 
-![Screenshot of Blender's node editor](blender_material.png)
+![Screenshot of Blender's node editor](img/blender_material.png)
 
 In addition to the node editor, Blender is completely scriptable with Python. The following code creates a material with two nodes and one link.
 
